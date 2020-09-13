@@ -7,8 +7,5 @@ let evaUnitModel = new Schema(
     pilot:{type: String}
   }, 
   { collection: 'eva_units'}           //tên của collection trong MongoDB
-
-
-
 );
 module.exports = mongoose.model('eva_units', evaUnitModel);
