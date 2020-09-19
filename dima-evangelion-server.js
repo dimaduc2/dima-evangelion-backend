@@ -96,17 +96,15 @@ app.listen(PORT, function() {		          //chạy Web Server ở địa chỉ ph
 });
 
 
-
-
-evaRoutes.route('/angel/xoa/').get(function(req, res) {
-  let id = req.query.id;
-  angelModel.findByIdAndDelete(id, function (err) {
+evaRoutes.route('/angel/xoa/').get(function(req, res) { // nhận câu hỏi từ browser
+  let id = req.query.id; // để id mới và ngắn ngọn
+  angelModel.findByIdAndDelete(id, function (err) { // để tìm trong danh sách đúng hình nộm angelModel để xóa
     if (err) {
-      console.log(err);
+      console.log(err); // hiện ra thông báo ở server bị lỗi
     }
     else {
-      console.log('đã xóa ' + id);
-      angelModel.find({}, function(err, ketQuaTimAngel){res.json(ketQuaTimAngel)})
+      console.log('đã xóa ' + id); // hiện ra thông báo ở server đã xóa
+      angelModel.find({}, function(err, ketQuaTimAngel){res.json(ketQuaTimAngel)}) // sau khi tìm được rồi gửi câu trả lời cho browser
     }
   });
 });
