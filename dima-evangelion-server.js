@@ -21,6 +21,35 @@ let peopleModel = require('./people.model');
 let pilotModel = require('./pilot.model');
 
 
+
+    // dùng mongoose để bắt đầu kết nối với mongoDB ở địa chỉ máy này ở phòng 27017
+// mongoose.connect('mongodb://127.0.0.1:27017/dima-evangelion-db', { useNewUrlParser: true })
+// mongoose.connect('mongodb://localhost:27017/dima-evangelion-db', { useNewUrlParser: true })
+
+
+mongoose.connect('mongodb+srv://dima:dimaduc@cluster0.3vaiy.mongodb.net/dima-evangelion-db?retryWrites=true&w=majority', { useNewUrlParser: true })
+
+
+
+        .catch(error => console.log('không kết nối được với mongoDB: ' + error));
+        // nếu không kết nối được thì thông báo lỗi
+const connection = mongoose.connection; //  <=> giữa server và DB
+
+// sau đó, mở kết nối để 2 bên nói chuyện
+// hiện ra, thông báo là nói chuyện đc rồi
+connection.once('open', function() {
+  console.log("Đã nói chuyện với MongoDB");
+  console.log('đây là server. Xin chào.')
+})
+
+
+// server bắt đầu nghe và đợi câu hỏi ở phòng PORT 5000
+app.listen(PORT, function() {		          //chạy Web Server ở địa chỉ phòng này
+  console.log("dima-evangelion-server đang chạy ở phòng Port: " + PORT);
+});
+
+
+
 evaRoutes.route('/eva_units/').get(function(req, res) {
   console.log('đã nhận câu hỏi eva_units')
     evaUnitModel.find({}, function(err, ketQuaTimRobot){
@@ -62,37 +91,15 @@ evaRoutes.route('/angel/').get(function(req, res) {
 
 evaRoutes.route('/people/').get(function(req, res) {
   console.log('đã nhận câu hỏi people')
-    peopleModel.find({}, function(err, ketQuaTimNguoi){
-      if (err) {
-        console.log(err);
-      } 
-      else {
-        console.log('đã tìm thấy ', ketQuaTimNguoi);
-        res.json(ketQuaTimNguoi)
-      }
-    })
-  });
-
-
-
-
-
-    // dùng mongoose để bắt đầu kết nối với mongoDB ở địa chỉ máy này ở phòng 27017
-mongoose.connect('mongodb://127.0.0.1:27017/dima-evangelion-db', { useNewUrlParser: true })
-        .catch(error => console.log('không kết nối được với mongoDB: ' + error));
-        // nếu không kết nối được thì thông báo lỗi
-const connection = mongoose.connection; //  <=> giữa server và DB
-
-// sau đó, mở kết nối để 2 bên nói chuyện
-// hiện ra, thông báo là nói chuyện đc rồi
-connection.once('open', function() {
-  console.log("Đã nói chuyện với MongoDB");
-})
-
-
-// server bắt đầu nghe và đợi câu hỏi ở phòng PORT 5000
-app.listen(PORT, function() {		          //chạy Web Server ở địa chỉ phòng này
-  console.log("dima-evangelion-server đang chạy ở phòng Port: " + PORT);
+  peopleModel.find({}, function(err, ketQuaTimNguoi){
+    if (err) {
+      console.log(err);
+    } 
+    else {
+      console.log('đã tìm thấy ', ketQuaTimNguoi);
+      res.json(ketQuaTimNguoi)
+    }
+  })
 });
 
 
@@ -164,7 +171,8 @@ evaRoutes.route('/angel/add').post(function(req, res) { // để nhận được
     // res.status(200).send('đã thêm tên Angel mới: ' + angelMoi.name + ' và số Angel mới: ' + angelMoi.number);
     // để server gửi câu trả lời (đã xong việc rồi) cho browser
 
-    angelModel.find({}, function(err, tatCaThongTinQuaiVat){ // để tìm trong dach sách DB đúng angelMoi
+    // tiếp theo 
+    angelModel.find({}, function(err, tatCaThongTinQuaiVat){ // để tìm trong dach sách DB, tìm tất cả quái vật (cả cũ cả mới)
       res.json(tatCaThongTinQuaiVat) // để gửi câu trả lời cho browser
     })
   })
@@ -192,7 +200,9 @@ evaRoutes.route('/pilot/add').post(function(req, res) {
     console.log('đã cho thêm tên mới: ' + pilotMoi.name + ', Eva mới: ' + pilotMoi.eva + ', giới tinh: ' + pilotMoi.gender + ', tình yêu' +pilotMoi.love);
     // res.status(200).send('đã thêm tên mới: ' + pilotMoi.name + ', Eva mới: ' + pilotMoi.eva + ', giới tinh: ' + pilotMoi.gender + ', tình yêu' +pilotMoi.love);
 
-
+    pilotModel.find({}, function(err, tatCaThongTinPilot){
+      res.json(tatCaThongTinPilot)
+    })
   })
 });
 
@@ -204,7 +214,9 @@ evaRoutes.route('/people/add').post(function(req, res) {
     console.log('đã cho thêm tên mới: ' + peopleMoi.name +  + ', giới tinh: ' + peopleMoi.gender + ', tình yêu' +peopleMoi.love);
     // res.status(200).send('đã thêm tên mới: ' + peopleMoi.name  + ', giới tinh: ' + peopleMoi.gender + ', tình yêu' +peopleMoi.love);
 
-
+    peopleModel.find({}, function(err, tatCaThongTinPeople){
+      res.json(tatCaThongTinPeople)
+    })
   })
 });
 
